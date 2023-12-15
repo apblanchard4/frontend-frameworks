@@ -2,7 +2,11 @@
 import BookTracker from './components/BookTracker';
 
 const Home = () => {
-  return <BookTracker />;
+  return (
+    <div>
+      <BookTracker />
+    </div>
+  );
 };
 
 export default Home;

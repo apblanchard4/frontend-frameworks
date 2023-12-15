@@ -1,5 +1,7 @@
 # Welcome to Remix!
 
+Created with TS due to issues with installation. When using 'npx create-remix@latest' only TS files would complile, so I continued to use TypeScript.
+
 - [Remix Docs](https://remix.run/docs)
 
 ## Development

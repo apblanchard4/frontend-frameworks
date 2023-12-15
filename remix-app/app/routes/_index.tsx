@@ -1,4 +1,3 @@
-// BookTracker.tsx
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import "../styles.css";
 interface Book {

@@ -1,4 +1,4 @@
-<!-- src/routes/BookTracker.svelte -->
+
 <script>
   import { onMount } from 'svelte';
   
