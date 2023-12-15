@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vanilla JS Book Tracker</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Vanilla JS Book Tracker</h1>
+      <label for="bookTitle">Title:</label>
+      <input type="text" id="bookTitle" placeholder="Enter book title" />
+      <label for="bookAuthor">Author:</label>
+      <input type="text" id="bookAuthor" placeholder="Enter author" />
+      <label for="startDate">Start Date:</label>
+      <input type="date" id="startDate" />
+      <label for="endDate">End Date:</label>
+      <input type="date" id="endDate" />
+      <label for="bookRating">Rating:</label>
+      <input
+        type="number"
+        id="bookRating"
+        min="1"
+        max="5"
+        placeholder="Enter rating"
+      />
+      <button onclick="addBook()">Add Book</button>
+      <table id="bookTable">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Started</th>
+            <th>Ended</th>
+            <th>Rating</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="bookList"></tbody>
+      </table>
+    </div>
+
+    <script>
+      let books = [];
+
+      window.onload = function () {
+        const storedBooks = localStorage.getItem("books");
+        if (storedBooks) {
+          books = JSON.parse(storedBooks);
+          checkAndUpdateReadStatus();
+          renderBooks();
+        }
+      };
+
+      function saveBooksToLocalStorage() {
+        localStorage.setItem("books", JSON.stringify(books));
+      }
+
+      function addBook() {
+        const title = document.getElementById("bookTitle").value;
+        const author = document.getElementById("bookAuthor").value;
+        const startDate = document.getElementById("startDate").value;
+        const endDate = document.getElementById("endDate").value;
+        const rating = document.getElementById("bookRating").value;
+
+        if (
+          title.trim() !== "" &&
+          author.trim() !== "" &&
+          startDate.trim() !== "" &&
+          rating.trim() !== ""
+        ) {
+          books.push({
+            title,
+            author,
+            startDate,
+            endDate,
+            rating,
+          });
+          checkAndUpdateReadStatus();
+          renderBooks();
+          resetInputFields();
+          saveBooksToLocalStorage();
+        }
+      }
+
+      function markAsRead(index) {
+        books[index].read = true;
+        renderBooks();
+        saveBooksToLocalStorage();
+      }
+
+      function editRating(index) {
+        const newRating = prompt("Enter new rating (1-5):");
+        if (newRating !== null && newRating >= 1 && newRating <= 5) {
+          books[index].rating = newRating;
+          renderBooks();
+          saveBooksToLocalStorage();
+        }
+      }
+
+      function deleteBook(index) {
+        books.splice(index, 1);
+        renderBooks();
+        saveBooksToLocalStorage();
+      }
+
+      function checkAndUpdateReadStatus() {
+        const currentDate = new Date().toISOString().split("T")[0];
+
+        books.forEach((book) => {
+          if (book.endDate && book.endDate < currentDate) {
+            book.read = true;
+          }
+        });
+      }
+
+      function renderBooks() {
+        const bookListElement = document.getElementById("bookList");
+        bookListElement.innerHTML = "";
+
+        books.forEach((book, index) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+                    <td>${book.title}</td>
+                    <td>${book.author}</td>
+                    <td>${book.startDate}</td>
+                    <td>${book.endDate ? book.endDate : "Not Ended"}</td>
+                    <td>${book.rating}</td>
+                    <td>
+                       
+                        <button onclick="editRating(${index})">Edit Rating</button>
+                        <button onclick="deleteBook(${index})">Delete</button>
+                    </td>
+                `;
+          bookListElement.appendChild(row);
+        });
+      }
+
+      function resetInputFields() {
+        document.getElementById("bookTitle").value = "";
+        document.getElementById("bookAuthor").value = "";
+        document.getElementById("startDate").value = "";
+        document.getElementById("endDate").value = "";
+        document.getElementById("bookRating").value = "";
+      }
+    </script>
+  </body>
+</html>
